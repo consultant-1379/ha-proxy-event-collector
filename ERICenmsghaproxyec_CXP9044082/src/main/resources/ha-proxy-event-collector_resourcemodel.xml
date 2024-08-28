@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configEntity xmlns="http://www.ericsson.com/oss/itpf/deployment/dst/descriptor">
+    <description>haproxyec</description>
+    <singleton>false</singleton>
+    <scaleUnit>
+        <loadDrivers>
+            <!--scaleUnit.loadDrivers.loadDriver.name : agreed Name of Load Driver-->
+            <!--scaleUnit.loadDrivers.loadDriver.description : Description of Load Driver in the form Use Case Identifier : load information from FS-->
+            <loadDriver name="numberO1nodeNe"
+                        description="Number of O1 Network Elements managed by mssnmpfm."></loadDriver>
+        </loadDrivers>
+        <minimumUnit>
+            <profile>
+                <cpuCores>1</cpuCores>
+                <cpuMinutes>0</cpuMinutes>
+                <peakCpuMinutes>0</peakCpuMinutes>
+                <memory>1024</memory>
+            </profile>
+            <profileConversionFormulae>
+                <cpuCores></cpuCores>
+                <cpuMinutes></cpuMinutes>
+                <peakCpuMinutes></peakCpuMinutes>
+                <memory></memory>
+            </profileConversionFormulae>
+        </minimumUnit>
+        <optimalUnit>
+            <profile>
+                <cpuCores>1</cpuCores>
+                <cpuMinutes>0</cpuMinutes>
+                <peakCpuMinutes>0</peakCpuMinutes>
+                <memory>1024</memory>
+            </profile>
+            <profileConversionFormulae>
+                <cpuCores>()</cpuCores>
+                <cpuMinutes>()</cpuMinutes>
+                <peakCpuMinutes>()</peakCpuMinutes>
+                <memory>()</memory>
+            </profileConversionFormulae>
+        </optimalUnit>
+    </scaleUnit>
+</configEntity>

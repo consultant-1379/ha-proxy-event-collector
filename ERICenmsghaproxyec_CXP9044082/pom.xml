@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.ericsson.oss.servicegroupcontainers</groupId>
+        <artifactId>ha-proxy-event-collector</artifactId>
+        <version>1.1.1-SNAPSHOT</version>
+    </parent>
+    <groupId>com.ericsson.oss.servicegroupcontainers</groupId>
+    <artifactId>ERICenmsghaproxyec_CXP9044082</artifactId>
+    <packaging>${rpm.packaging}</packaging>
+    <name>ha-proxy-event-collector feature CXP module</name>
+    <properties>
+        <com.ericsson.oss.rpm.architecture>noarch</com.ericsson.oss.rpm.architecture>
+        <rpm-root>ericsson</rpm-root>
+        <comp-name>enm</comp-name>
+        <install-path>jboss</install-path>
+        <publish_artifact>true</publish_artifact>
+        <media.category>service</media.category>
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.ericsson.oss.itpf.deployment</groupId>
+                <artifactId>deployment-descriptor-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>configurable-entity</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configEntity>
+                        <stereotype>SERVICE_PKG</stereotype>
+                        <parameters>
+                            <property name="vm_service_name" defaultValue="haproxyec" />
+                            <itemType name="vm-package">
+                                <property name="name" defaultValue="ERICenmsghaproxyec_CXP9044082" />
+                            </itemType>
+                        </parameters>
+
+                        <deploymentDependencies>
+                            <deploymentDependency>
+                                <groupId>com.ericsson.oss.itpf.deployment.tools</groupId>
+                                <artifactId>virtual-machine</artifactId>
+                                <qualifier>CONTAINER</qualifier>
+                                <alias>vm</alias>
+                            </deploymentDependency>
+                        </deploymentDependencies>
+
+                        <assignments>
+                            <assign>
+                                <path>vm</path>
+                                <itemType name="vm-service">
+                                    <property name="service_name" value="haproxyec" />
+                                    <property name="image_name" value="rhel7-lsb-image" />
+                                    <property name="cpus" value="1" />
+                                    <property name="ram" value="1024M" />
+                                </itemType>
+                                <itemType name="vcs-clustered-service">
+                                    <property name="active" value="2" />
+                                    <property name="standby" value="0" />
+                                    <property name="online_timeout" value="600" />
+                                    <property name="offline_timeout" value="300" />
+                                </itemType>
+                            </assign>
+                            <assign>
+                                <path>vm</path>
+                                <scope>PHYSICAL_PRODUCTION</scope>
+                                <itemType name="vm-service">
+                                    <property name="cpus" value="1" />
+                                    <property name="ram" value="1024M" />
+                                </itemType>
+                            </assign>
+                            <assign>
+                                <path>vm</path>
+                                <scope>PHYSICAL_TEST</scope>
+                                <itemType name="vm-service">
+                                    <property name="cpus" value="1" />
+                                    <property name="ram" value="1024M" />
+                                </itemType>
+                            </assign>
+                            <assign>
+                                <path>vm</path>
+                                <scope>CLOUD</scope>
+                                <itemType name="vm-service">
+                                    <property name="cpus" value="1" />
+                                    <property name="ram" value="1024M" />
+                                </itemType>
+                            </assign>
+                        </assignments>
+                    </configEntity>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <configuration>
+                            <name>this.year</name>
+                            <pattern>yyyy</pattern>
+                            <unit>year</unit>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <skip>true</skip>
+                    <inherited>true</inherited>
+                    <copyright>${this.year} Ericsson AB. All rights reserved</copyright>
+                    <description>${ericsson.rstate}</description>
+                    <group>ERI-NMS</group>
+                    <vendor>Ericsson AB</vendor>
+                    <url>www.ericsson.com</url>
+                    <requires>
+                        <require>ERIChaproxyconfig_CXP9031973 &gt; 1.6.8</require>
+                    </requires>
+
+                    <mappings>
+                        <mapping>
+                            <directory>${vm.jboss-install-path}/bin/pre-start</directory>
+                            <filemode>550</filemode>
+                            <username>${jboss-username}</username>
+                            <groupname>${jboss-groupname}</groupname>
+                            <configuration>false</configuration>
+                            <directoryIncluded>false</directoryIncluded>
+                            <recurseDirectories>false</recurseDirectories>
+                            <sources>
+                                <source>
+                                    <location>src/main/scripts</location>
+                                    <includes>
+                                        <include>oomKillerTuning.sh</include>
+                                    </includes>
+                                </source>
+                            </sources>
+                        </mapping>
+                    </mappings>
+
+                    <postinstallScriptlet>
+                        <scriptFile>src/main/scripts/postinstall.sh</scriptFile>
+                        <fileEncoding>utf-8</fileEncoding>
+                    </postinstallScriptlet>
+
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

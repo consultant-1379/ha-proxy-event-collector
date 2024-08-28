@@ -1,0 +1,1 @@
+# Build fails without a src/main/resources directory so have to create this file inside the dir!
